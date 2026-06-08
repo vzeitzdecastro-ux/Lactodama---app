@@ -1,0 +1,679 @@
+import { useState, useMemo } from "react";
+
+const NAVY = "#0A1172";
+const RED = "#CC0000";
+
+const products = [
+  // FRIOS
+  { id: 1, category: "Frios", name: "Mussarela Alto Alegre pç", price: 35.90, unit: "kg" },
+  { id: 2, category: "Frios", name: "Mussarela Nutrilack", price: 32.90, unit: "kg" },
+  { id: 3, category: "Frios", name: "Parmesão La Paulina Quadrado", price: 59.90, unit: "kg" },
+  { id: 4, category: "Frios", name: "Parmesão La Paulina Redondo", price: 69.90, unit: "kg" },
+  { id: 5, category: "Frios", name: "Parmesão Capa Preta", price: 89.90, unit: "kg" },
+  { id: 6, category: "Frios", name: "Provolone", price: 49.90, unit: "kg" },
+  { id: 7, category: "Frios", name: "Queijo Prato", price: 48.90, unit: "kg" },
+  { id: 8, category: "Frios", name: "Gorgonzola", price: 69.90, unit: "kg" },
+  { id: 9, category: "Frios", name: "Queijo Minas", price: 49.90, unit: "kg" },
+  { id: 10, category: "Frios", name: "Ricota", price: 15.90, unit: "kg" },
+  { id: 11, category: "Frios", name: "Queijo Coalho", price: 69.90, unit: "kg" },
+  { id: 12, category: "Frios", name: "Presunto Perdigão", price: 23.90, unit: "kg" },
+  { id: 13, category: "Frios", name: "Presunto Alegra", price: 21.90, unit: "kg" },
+  { id: 14, category: "Frios", name: "Mortadela", price: 22.90, unit: "kg" },
+  { id: 15, category: "Frios", name: "Apresuntado", price: 15.90, unit: "kg" },
+  { id: 16, category: "Frios", name: "Peito de Peru", price: 58.90, unit: "kg" },
+  { id: 17, category: "Frios", name: "Lombo Pamplona", price: 29.90, unit: "kg" },
+  { id: 18, category: "Frios", name: "Salame Hamburgues", price: 78.90, unit: "kg" },
+  { id: 19, category: "Frios", name: "Salame Italiano", price: 78.90, unit: "kg" },
+  { id: 20, category: "Frios", name: "Mussarela Fatiada", price: 43.90, unit: "kg" },
+  { id: 21, category: "Frios", name: "Presunto Fatiado", price: 28.90, unit: "kg" },
+  { id: 22, category: "Frios", name: "Apresuntado Fatiado", price: 18.90, unit: "kg" },
+  { id: 23, category: "Frios", name: "Mortadela Fatiada", price: 26.90, unit: "kg" },
+  { id: 24, category: "Frios", name: "Peito de Peru Fatiado", price: 59.90, unit: "kg" },
+  { id: 25, category: "Frios", name: "Queijo Prato Fatiado", price: 49.90, unit: "kg" },
+  { id: 26, category: "Frios", name: "Queijo Provolone Fatiado", price: 59.90, unit: "kg" },
+  { id: 27, category: "Frios", name: "Queijo Cheddar Fatiado", price: 38.90, unit: "kg" },
+  { id: 28, category: "Frios", name: "Mussarela Interfolhada Fatiada", price: 39.90, unit: "kg" },
+  { id: 29, category: "Frios", name: "Lombo Fatiado", price: 32.90, unit: "kg" },
+  { id: 30, category: "Frios", name: "Bacon Fatiado", price: 39.90, unit: "kg" },
+  { id: 31, category: "Frios", name: "Casadinho", price: 39.90, unit: "kg" },
+  // REQUEIJÃO
+  { id: 32, category: "Requeijão", name: "Requeijão Misto 1,5kg", price: 15.75, unit: "un" },
+  { id: 33, category: "Requeijão", name: "Requeijão Misto 1,8kg", price: 12.90, unit: "un" },
+  { id: 34, category: "Requeijão", name: "Requeijão Misto 1,8kg TopVit", price: 15.90, unit: "un" },
+  { id: 35, category: "Requeijão", name: "Requeijão Puro 1,5kg", price: 42.90, unit: "un" },
+  { id: 36, category: "Requeijão", name: "Requeijão Puro 1,5kg Lacto Alegre", price: 39.90, unit: "un" },
+  { id: 37, category: "Requeijão", name: "Cheddar Misto 1,5kg", price: 29.90, unit: "un" },
+  { id: 38, category: "Requeijão", name: "Cheddar Puro 1,5kg", price: 42.90, unit: "un" },
+  { id: 39, category: "Requeijão", name: "Cheddar Puro 1,5kg Premium", price: 48.90, unit: "un" },
+  { id: 40, category: "Requeijão", name: "Cheddar Misto 1,2kg", price: 13.90, unit: "un" },
+  { id: 41, category: "Requeijão", name: "Cream Cheese 1,2kg", price: 35.90, unit: "un" },
+  { id: 42, category: "Requeijão", name: "Milho Sachê 1,7kg", price: 21.90, unit: "un" },
+  // EMBUTIDOS
+  { id: 43, category: "Embutidos", name: "Bacon Fatiado JCW", price: 42.90, unit: "kg" },
+  { id: 44, category: "Embutidos", name: "Bacon Fatiado Beiquim", price: 34.90, unit: "kg" },
+  { id: 45, category: "Embutidos", name: "Bacon Fatiado Frimesa", price: 46.90, unit: "kg" },
+  { id: 46, category: "Embutidos", name: "Bacon em Cubos Sigma", price: 25.90, unit: "kg" },
+  { id: 47, category: "Embutidos", name: "Bacon em Cubos Clara", price: 21.90, unit: "kg" },
+  { id: 48, category: "Embutidos", name: "Bacon em Cubos Frimesa", price: 39.90, unit: "kg" },
+  { id: 49, category: "Embutidos", name: "Calabresa Fatiada JCW", price: 29.90, unit: "kg" },
+  { id: 50, category: "Embutidos", name: "Calabresa Fatiada Frimesa", price: 35.90, unit: "kg" },
+  { id: 51, category: "Embutidos", name: "Pepperoni Fatiado 500g", price: 25.90, unit: "un" },
+  { id: 52, category: "Embutidos", name: "Pepperoni Fatiado", price: 79.90, unit: "kg" },
+  // CONGELADOS
+  { id: 53, category: "Congelados", name: "Caixa de Hambúrguer 36u Excelsior", price: 36.90, unit: "cx" },
+  { id: 54, category: "Congelados", name: "Caixa de Hambúrguer 36u Perdigão", price: 46.90, unit: "cx" },
+  { id: 55, category: "Congelados", name: "Caixa de Hambúrguer 36u Sadia", price: 32.90, unit: "cx" },
+  { id: 56, category: "Congelados", name: "Caixa de Hambúrguer 36u Brasa", price: 79.90, unit: "cx" },
+  { id: 57, category: "Congelados", name: "Sassami", price: 16.99, unit: "kg" },
+  { id: 58, category: "Congelados", name: "Batata Congelada 7mm 2kg", price: 29.90, unit: "un" },
+  { id: 59, category: "Congelados", name: "Batata Congelada 9x9 2kg", price: 25.90, unit: "un" },
+  { id: 60, category: "Congelados", name: "Batata Congelada 2kg", price: 19.90, unit: "un" },
+  { id: 61, category: "Congelados", name: "Batata Congelada Crinkle 2kg", price: 32.90, unit: "un" },
+  { id: 62, category: "Congelados", name: "Polenta Congelada", price: 12.90, unit: "kg" },
+  { id: 63, category: "Congelados", name: "Polenta Congelada 2kg", price: 10.90, unit: "un" },
+  { id: 64, category: "Congelados", name: "Mandioca Congelada", price: 15.90, unit: "kg" },
+  { id: 65, category: "Congelados", name: "Mandioca Noisette 2kg", price: 23.90, unit: "un" },
+  { id: 66, category: "Congelados", name: "Anel de Cebola", price: 25.90, unit: "kg" },
+  { id: 67, category: "Congelados", name: "Pão de Queijo Alma Viva", price: 19.90, unit: "kg" },
+  { id: 68, category: "Congelados", name: "Pão de Queijo Forno do Sul", price: 12.90, unit: "kg" },
+  { id: 69, category: "Congelados", name: "Pão de Queijo 2kg Cymco", price: 43.90, unit: "un" },
+  // BATATA PALHA
+  { id: 70, category: "Batata Palha", name: "Batata Palha Estrelinha", price: 16.90, unit: "kg" },
+  { id: 71, category: "Batata Palha", name: "Batata Palha Taico", price: 13.99, unit: "kg" },
+  { id: 72, category: "Batata Palha", name: "Batata Palha Hot", price: 19.99, unit: "un" },
+  { id: 73, category: "Batata Palha", name: "Batata Palha Kifritas", price: 22.90, unit: "un" },
+  // DOCES
+  { id: 74, category: "Doces", name: "Chocolate Forneável Avelã", price: 34.90, unit: "kg" },
+  { id: 75, category: "Doces", name: "Chocolate Forneável Branco", price: 29.90, unit: "kg" },
+  { id: 76, category: "Doces", name: "Chocolate Forneável ao Leite", price: 29.90, unit: "kg" },
+  { id: 77, category: "Doces", name: "Chocolate Forneável Leitinho", price: 38.90, unit: "kg" },
+  { id: 78, category: "Doces", name: "Chocolate em Gotas Branco", price: 43.90, unit: "kg" },
+  { id: 79, category: "Doces", name: "Chocolate em Gotas Preto", price: 43.90, unit: "kg" },
+  { id: 80, category: "Doces", name: "Granulado Confeiteiro", price: 25.90, unit: "kg" },
+  { id: 81, category: "Doces", name: "Granulado Dori", price: 26.90, unit: "kg" },
+  { id: 82, category: "Doces", name: "Granulado Mix Festas", price: 18.90, unit: "kg" },
+  { id: 83, category: "Doces", name: "Chocolate em Pó 33%", price: 58.90, unit: "kg" },
+  { id: 84, category: "Doces", name: "Chocolate em Pó 50%", price: 60.90, unit: "kg" },
+  { id: 85, category: "Doces", name: "Nutella 650g", price: 54.90, unit: "un" },
+  { id: 86, category: "Doces", name: "Doce de Leite Puro", price: 23.90, unit: "kg" },
+  { id: 87, category: "Doces", name: "Soro de Doce de Leite", price: 12.90, unit: "kg" },
+  // CONDIMENTOS
+  { id: 88, category: "Condimentos", name: "Ketchup 3,8kg", price: 48.90, unit: "un" },
+  { id: 89, category: "Condimentos", name: "Ketchup 3,5kg Calchup", price: 28.90, unit: "un" },
+  { id: 90, category: "Condimentos", name: "Ketchup 3kg Lanchero", price: 13.90, unit: "un" },
+  { id: 91, category: "Condimentos", name: "Ketchup 3,4kg Catuia", price: 18.90, unit: "un" },
+  { id: 92, category: "Condimentos", name: "Ketchup 3,5kg Arrifana", price: 29.90, unit: "un" },
+  { id: 93, category: "Condimentos", name: "Mostarda 3,6kg", price: 53.90, unit: "un" },
+  { id: 94, category: "Condimentos", name: "Mostarda 1,7kg", price: 19.90, unit: "un" },
+  { id: 95, category: "Condimentos", name: "Mostarda 3kg Lanchero", price: 13.90, unit: "un" },
+  { id: 96, category: "Condimentos", name: "Mostarda 3,2kg Dajuda", price: 19.90, unit: "un" },
+  { id: 97, category: "Condimentos", name: "Mostarda 3,2kg Catuia", price: 18.90, unit: "un" },
+  { id: 98, category: "Condimentos", name: "Mostarda 3kg", price: 39.90, unit: "un" },
+  { id: 99, category: "Condimentos", name: "Mostarda Escura 3kg", price: 49.90, unit: "un" },
+  { id: 100, category: "Condimentos", name: "Maionese 3kg Dajuda", price: 26.90, unit: "un" },
+  { id: 101, category: "Condimentos", name: "Maionese 1,8kg Hellmann's", price: 48.90, unit: "un" },
+  { id: 102, category: "Condimentos", name: "Maionese Vigor", price: 13.95, unit: "kg" },
+  { id: 103, category: "Condimentos", name: "Maionese Dajuda", price: 11.90, unit: "kg" },
+  { id: 104, category: "Condimentos", name: "Maionese 2,8kg Lanchero", price: 22.90, unit: "un" },
+  { id: 105, category: "Condimentos", name: "Maionese Hellmann's 1kg", price: 18.90, unit: "kg" },
+  { id: 106, category: "Condimentos", name: "Molho Billy Jack", price: 22.90, unit: "kg" },
+  { id: 107, category: "Condimentos", name: "Caixa Sachê Molhos 192u", price: 29.90, unit: "cx" },
+  { id: 108, category: "Condimentos", name: "Caixa Sachê Molhos 190u", price: 28.90, unit: "cx" },
+  { id: 109, category: "Condimentos", name: "Caixa Sachê Ketchup 192u", price: 16.90, unit: "cx" },
+  { id: 110, category: "Condimentos", name: "Caixa Sachê Maionese 192u", price: 18.75, unit: "cx" },
+  { id: 111, category: "Condimentos", name: "Caixa Sachê Mostarda 192u", price: 15.95, unit: "cx" },
+  { id: 112, category: "Condimentos", name: "Caixa Sachê Pimenta 192u", price: 18.90, unit: "cx" },
+  { id: 113, category: "Condimentos", name: "Caixa Sachê Molho Verde 192u", price: 29.90, unit: "cx" },
+  { id: 114, category: "Condimentos", name: "Caixa Sachê Molhos 196u", price: 18.90, unit: "cx" },
+  { id: 115, category: "Condimentos", name: "Molho Bag p/ Pizza 3,1kg", price: 15.90, unit: "un" },
+  { id: 116, category: "Condimentos", name: "Molho de Tomate 1,7kg Elefante", price: 36.90, unit: "un" },
+  { id: 117, category: "Condimentos", name: "Molho de Tomate 1,7kg Tarantella", price: 15.90, unit: "un" },
+  { id: 118, category: "Condimentos", name: "Molho de Tomate 1,7kg Pomarola", price: 19.90, unit: "un" },
+  // TEMPEROS
+  { id: 119, category: "Temperos", name: "Sabor Ami Completo 5kg", price: 68.90, unit: "un" },
+  { id: 120, category: "Temperos", name: "Cebola Crispy 500g", price: 38.90, unit: "un" },
+  { id: 121, category: "Temperos", name: "Creme de Cebola", price: 16.90, unit: "kg" },
+  { id: 122, category: "Temperos", name: "Caldo de Carne Seeto", price: 10.90, unit: "kg" },
+  { id: 123, category: "Temperos", name: "Caldo de Galinha Seeto", price: 10.90, unit: "kg" },
+  { id: 124, category: "Temperos", name: "Colorau", price: 15.90, unit: "kg" },
+  { id: 125, category: "Temperos", name: "Caldo de Galinha Maggi", price: 18.90, unit: "kg" },
+  { id: 126, category: "Temperos", name: "Caldo de Carne Maggi", price: 19.90, unit: "un" },
+  { id: 127, category: "Temperos", name: "Tempero p/ Aves 900g", price: 42.90, unit: "un" },
+  { id: 128, category: "Temperos", name: "Tempero p/ Carnes 900g", price: 42.90, unit: "un" },
+  { id: 129, category: "Temperos", name: "Tempero p/ Legumes 900g", price: 42.90, unit: "un" },
+  { id: 130, category: "Temperos", name: "Glutamato de Sódio 3kg", price: 89.90, unit: "un" },
+  { id: 131, category: "Temperos", name: "Farinha p/ Pizza 5kg", price: 17.90, unit: "un" },
+  // CONSERVAS
+  { id: 132, category: "Conservas", name: "Azeitona Sachê", price: 35.90, unit: "kg" },
+  { id: 133, category: "Conservas", name: "Azeitona Inteira Sachê", price: 32.90, unit: "kg" },
+  { id: 134, category: "Conservas", name: "Azeitona Sem Caroço Sachê", price: 38.90, unit: "kg" },
+  { id: 135, category: "Conservas", name: "Azeitona Fatiada Balde 1,8kg", price: 49.90, unit: "un" },
+  { id: 136, category: "Conservas", name: "Azeitona Fatiada Balde 1,8kg", price: 59.90, unit: "un" },
+  { id: 137, category: "Conservas", name: "Azeitona Fatiada Balde 1,8kg Rainha", price: 46.90, unit: "un" },
+  { id: 138, category: "Conservas", name: "Palmito Picado 1,8kg Sport", price: 32.90, unit: "un" },
+  { id: 139, category: "Conservas", name: "Palmito Picado 1,8kg Pro", price: 26.90, unit: "un" },
+  { id: 140, category: "Conservas", name: "Palmito Tolete 1,8kg", price: 69.90, unit: "un" },
+  { id: 141, category: "Conservas", name: "Palmito Rodela 1,8kg Sport", price: 48.90, unit: "un" },
+  { id: 142, category: "Conservas", name: "Palmito Rodela 1,8kg", price: 32.90, unit: "un" },
+  { id: 143, category: "Conservas", name: "Milho Sachê 1,7kg", price: 21.90, unit: "un" },
+  { id: 144, category: "Conservas", name: "Milho Lata 1,7kg Predilecta", price: 21.90, unit: "un" },
+  { id: 145, category: "Conservas", name: "Milho Lata 1,7kg Bonare", price: 23.90, unit: "un" },
+  { id: 146, category: "Conservas", name: "Milho Lata 1,7kg Quero", price: 19.90, unit: "un" },
+  { id: 147, category: "Conservas", name: "Ervilha Lata 1,7kg Bonare", price: 23.90, unit: "un" },
+  { id: 148, category: "Conservas", name: "Ervilha Lata 1,7kg Parmesa", price: 19.90, unit: "un" },
+  { id: 149, category: "Conservas", name: "Pepino em Conserva", price: 15.90, unit: "kg" },
+  { id: 150, category: "Conservas", name: "Pepino em Conserva 1,8kg", price: 39.90, unit: "un" },
+  { id: 151, category: "Conservas", name: "Pepino Burger Fat 440g", price: 18.90, unit: "un" },
+  { id: 152, category: "Conservas", name: "Champignon Inteiro", price: 29.90, unit: "kg" },
+  { id: 153, category: "Conservas", name: "Champignon Fatiado", price: 28.90, unit: "kg" },
+];
+
+const categories = ["Todos", ...Array.from(new Set(products.map(p => p.category)))];
+
+const categoryEmojis = {
+  "Frios": "🧀",
+  "Requeijão": "🫙",
+  "Embutidos": "🥓",
+  "Congelados": "❄️",
+  "Batata Palha": "🥔",
+  "Doces": "🍫",
+  "Condimentos": "🧴",
+  "Temperos": "🌿",
+  "Conservas": "🫒",
+};
+
+export default function LactodamaApp() {
+  const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [search, setSearch] = useState("");
+  const [cart, setCart] = useState({});
+  const [view, setView] = useState("catalog"); // catalog | cart | success
+  const [clientName, setClientName] = useState("");
+  const [clientPhone, setClientPhone] = useState("");
+
+  const filtered = useMemo(() => {
+    return products.filter(p => {
+      const matchCat = selectedCategory === "Todos" || p.category === selectedCategory;
+      const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
+      return matchCat && matchSearch;
+    });
+  }, [selectedCategory, search]);
+
+  const cartItems = Object.entries(cart)
+    .map(([id, qty]) => ({ ...products.find(p => p.id === Number(id)), qty }))
+    .filter(i => i.qty > 0);
+
+  const total = cartItems.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const cartCount = cartItems.reduce((sum, i) => sum + i.qty, 0);
+
+  const addToCart = (id) => setCart(c => ({ ...c, [id]: (c[id] || 0) + 1 }));
+  const removeFromCart = (id) => setCart(c => ({ ...c, [id]: Math.max((c[id] || 0) - 1, 0) }));
+
+  const generateWhatsApp = () => {
+    const lines = cartItems.map(i => `• ${i.name} — ${i.qty} ${i.unit} — R$ ${(i.price * i.qty).toFixed(2)}`).join("\n");
+    const msg = `*Pedido Lactodama*\n\n*Cliente:* ${clientName}\n*Telefone:* ${clientPhone}\n\n${lines}\n\n*Total aprox.:* R$ ${total.toFixed(2)}\n\n_(Valores negociáveis)_`;
+    const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.open(url, "_blank");
+    setView("success");
+  };
+
+  const styles = {
+    app: {
+      minHeight: "100vh",
+      background: NAVY,
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      color: "#fff",
+    },
+    header: {
+      background: NAVY,
+      borderBottom: `3px solid ${RED}`,
+      padding: "16px 20px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      position: "sticky",
+      top: 0,
+      zIndex: 100,
+      boxShadow: "0 2px 12px rgba(0,0,0,0.4)",
+    },
+    logo: {
+      display: "flex",
+      flexDirection: "column",
+      lineHeight: 1,
+    },
+    logoTitle: {
+      fontSize: 22,
+      fontWeight: 900,
+      color: "#fff",
+      letterSpacing: 1,
+    },
+    logoSub: {
+      fontSize: 11,
+      color: RED,
+      fontWeight: 600,
+      letterSpacing: 2,
+    },
+    cartBtn: {
+      background: RED,
+      border: "none",
+      borderRadius: 12,
+      padding: "10px 18px",
+      color: "#fff",
+      fontWeight: 700,
+      fontSize: 15,
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      gap: 8,
+    },
+    searchBar: {
+      padding: "12px 20px",
+      background: "rgba(255,255,255,0.06)",
+      borderBottom: "1px solid rgba(255,255,255,0.08)",
+    },
+    searchInput: {
+      width: "100%",
+      padding: "12px 16px",
+      borderRadius: 10,
+      border: "2px solid rgba(255,255,255,0.15)",
+      background: "rgba(255,255,255,0.1)",
+      color: "#fff",
+      fontSize: 15,
+      outline: "none",
+      boxSizing: "border-box",
+    },
+    catScroll: {
+      display: "flex",
+      gap: 8,
+      overflowX: "auto",
+      padding: "12px 20px",
+      scrollbarWidth: "none",
+    },
+    catBtn: (active) => ({
+      background: active ? RED : "rgba(255,255,255,0.1)",
+      border: active ? `2px solid ${RED}` : "2px solid rgba(255,255,255,0.15)",
+      borderRadius: 20,
+      padding: "8px 16px",
+      color: "#fff",
+      fontWeight: active ? 700 : 500,
+      fontSize: 13,
+      cursor: "pointer",
+      whiteSpace: "nowrap",
+      transition: "all 0.2s",
+    }),
+    grid: {
+      display: "grid",
+      gridTemplateColumns: "repeat(2, 1fr)",
+      gap: 12,
+      padding: "12px 16px 100px",
+    },
+    card: {
+      background: "rgba(255,255,255,0.07)",
+      borderRadius: 14,
+      padding: "14px 12px",
+      border: "1px solid rgba(255,255,255,0.1)",
+      display: "flex",
+      flexDirection: "column",
+      gap: 6,
+    },
+    cardCat: {
+      fontSize: 11,
+      color: RED,
+      fontWeight: 600,
+      textTransform: "uppercase",
+      letterSpacing: 0.5,
+    },
+    cardName: {
+      fontSize: 13,
+      fontWeight: 700,
+      color: "#fff",
+      lineHeight: 1.3,
+      flex: 1,
+    },
+    cardPrice: {
+      fontSize: 16,
+      fontWeight: 900,
+      color: "#FFD700",
+    },
+    cardUnit: {
+      fontSize: 11,
+      color: "rgba(255,255,255,0.5)",
+    },
+    cardNeg: {
+      fontSize: 10,
+      color: "rgba(255,255,255,0.4)",
+      fontStyle: "italic",
+    },
+    qtyRow: {
+      display: "flex",
+      alignItems: "center",
+      gap: 6,
+      marginTop: 4,
+    },
+    qtyBtn: {
+      width: 28,
+      height: 28,
+      borderRadius: 8,
+      border: `2px solid ${RED}`,
+      background: "transparent",
+      color: RED,
+      fontSize: 18,
+      fontWeight: 700,
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      lineHeight: 1,
+    },
+    qtyNum: {
+      minWidth: 24,
+      textAlign: "center",
+      fontWeight: 700,
+      fontSize: 15,
+      color: "#fff",
+    },
+    // Cart styles
+    cartView: {
+      minHeight: "100vh",
+      background: NAVY,
+      paddingBottom: 120,
+    },
+    cartHeader: {
+      background: NAVY,
+      borderBottom: `3px solid ${RED}`,
+      padding: "16px 20px",
+      display: "flex",
+      alignItems: "center",
+      gap: 12,
+      position: "sticky",
+      top: 0,
+      zIndex: 100,
+    },
+    backBtn: {
+      background: "rgba(255,255,255,0.1)",
+      border: "none",
+      borderRadius: 8,
+      padding: "8px 14px",
+      color: "#fff",
+      fontWeight: 700,
+      cursor: "pointer",
+      fontSize: 14,
+    },
+    cartTitle: {
+      fontSize: 20,
+      fontWeight: 900,
+      color: "#fff",
+    },
+    cartItem: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "14px 20px",
+      borderBottom: "1px solid rgba(255,255,255,0.08)",
+    },
+    cartItemName: {
+      fontSize: 14,
+      fontWeight: 600,
+      color: "#fff",
+      flex: 1,
+      paddingRight: 8,
+    },
+    cartItemRight: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-end",
+      gap: 4,
+    },
+    cartItemTotal: {
+      fontSize: 15,
+      fontWeight: 900,
+      color: "#FFD700",
+    },
+    cartItemQty: {
+      fontSize: 12,
+      color: "rgba(255,255,255,0.5)",
+    },
+    emptyCart: {
+      textAlign: "center",
+      padding: "60px 20px",
+      color: "rgba(255,255,255,0.4)",
+      fontSize: 16,
+    },
+    checkoutBox: {
+      position: "fixed",
+      bottom: 0,
+      left: 0,
+      right: 0,
+      background: "#0d1a7a",
+      borderTop: `3px solid ${RED}`,
+      padding: "16px 20px",
+    },
+    totalRow: {
+      display: "flex",
+      justifyContent: "space-between",
+      marginBottom: 12,
+    },
+    totalLabel: {
+      fontSize: 16,
+      color: "rgba(255,255,255,0.7)",
+    },
+    totalValue: {
+      fontSize: 20,
+      fontWeight: 900,
+      color: "#FFD700",
+    },
+    inputField: {
+      width: "100%",
+      padding: "11px 14px",
+      borderRadius: 10,
+      border: "2px solid rgba(255,255,255,0.2)",
+      background: "rgba(255,255,255,0.08)",
+      color: "#fff",
+      fontSize: 14,
+      marginBottom: 10,
+      boxSizing: "border-box",
+      outline: "none",
+    },
+    sendBtn: {
+      width: "100%",
+      padding: "14px",
+      background: "#25D366",
+      border: "none",
+      borderRadius: 12,
+      color: "#fff",
+      fontSize: 16,
+      fontWeight: 900,
+      cursor: "pointer",
+      letterSpacing: 0.5,
+    },
+    successView: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      minHeight: "100vh",
+      padding: 32,
+      textAlign: "center",
+    },
+    successIcon: {
+      fontSize: 72,
+      marginBottom: 20,
+    },
+    successTitle: {
+      fontSize: 26,
+      fontWeight: 900,
+      color: "#25D366",
+      marginBottom: 10,
+    },
+    successSub: {
+      fontSize: 15,
+      color: "rgba(255,255,255,0.6)",
+      marginBottom: 32,
+    },
+    newOrderBtn: {
+      background: RED,
+      border: "none",
+      borderRadius: 12,
+      padding: "14px 32px",
+      color: "#fff",
+      fontSize: 16,
+      fontWeight: 700,
+      cursor: "pointer",
+    },
+  };
+
+  if (view === "success") {
+    return (
+      <div style={styles.app}>
+        <div style={styles.successView}>
+          <div style={styles.successIcon}>✅</div>
+          <div style={styles.successTitle}>Pedido Enviado!</div>
+          <div style={styles.successSub}>
+            Seu pedido foi encaminhado via WhatsApp para a Lactodama. Em breve entrarão em contato.
+          </div>
+          <button style={styles.newOrderBtn} onClick={() => { setCart({}); setClientName(""); setClientPhone(""); setView("catalog"); }}>
+            Fazer Novo Pedido
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (view === "cart") {
+    return (
+      <div style={styles.cartView}>
+        <div style={styles.cartHeader}>
+          <button style={styles.backBtn} onClick={() => setView("catalog")}>← Voltar</button>
+          <div style={styles.cartTitle}>🛒 Meu Pedido</div>
+        </div>
+        {cartItems.length === 0 ? (
+          <div style={styles.emptyCart}>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>🛒</div>
+            <div>Seu carrinho está vazio.</div>
+            <div style={{ marginTop: 8, fontSize: 13 }}>Adicione produtos no catálogo!</div>
+          </div>
+        ) : (
+          <>
+            {cartItems.map(item => (
+              <div key={item.id} style={styles.cartItem}>
+                <div>
+                  <div style={styles.cartItemName}>{item.name}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
+                    <button style={styles.qtyBtn} onClick={() => removeFromCart(item.id)}>−</button>
+                    <span style={styles.qtyNum}>{item.qty}</span>
+                    <button style={styles.qtyBtn} onClick={() => addToCart(item.id)}>+</button>
+                    <span style={styles.cartItemQty}>{item.unit}</span>
+                  </div>
+                </div>
+                <div style={styles.cartItemRight}>
+                  <div style={styles.cartItemTotal}>R$ {(item.price * item.qty).toFixed(2)}</div>
+                  <div style={styles.cartItemQty}>R$ {item.price.toFixed(2)}/{item.unit}</div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+        {cartItems.length > 0 && (
+          <div style={styles.checkoutBox}>
+            <div style={styles.totalRow}>
+              <span style={styles.totalLabel}>Total aprox.</span>
+              <span style={styles.totalValue}>R$ {total.toFixed(2)}</span>
+            </div>
+            <input
+              style={styles.inputField}
+              placeholder="Seu nome / nome do estabelecimento"
+              value={clientName}
+              onChange={e => setClientName(e.target.value)}
+            />
+            <input
+              style={styles.inputField}
+              placeholder="Seu telefone (opcional)"
+              value={clientPhone}
+              onChange={e => setClientPhone(e.target.value)}
+            />
+            <button
+              style={{ ...styles.sendBtn, opacity: clientName ? 1 : 0.5 }}
+              disabled={!clientName}
+              onClick={generateWhatsApp}
+            >
+              📲 Enviar Pedido pelo WhatsApp
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div style={styles.app}>
+      <div style={styles.header}>
+        <div style={styles.logo}>
+          <div style={styles.logoTitle}>LD LACTODAMA</div>
+          <div style={styles.logoSub}>QUEIJOS & CIA</div>
+        </div>
+        <button style={styles.cartBtn} onClick={() => setView("cart")}>
+          🛒 {cartCount > 0 && <span style={{ background: "#fff", color: RED, borderRadius: "50%", width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 900 }}>{cartCount}</span>}
+          {cartCount === 0 ? "Carrinho" : "Ver Pedido"}
+        </button>
+      </div>
+
+      <div style={styles.searchBar}>
+        <input
+          style={styles.searchInput}
+          placeholder="🔍 Buscar produto..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+      </div>
+
+      <div style={styles.catScroll}>
+        {categories.map(cat => (
+          <button
+            key={cat}
+            style={styles.catBtn(selectedCategory === cat)}
+            onClick={() => setSelectedCategory(cat)}
+          >
+            {cat === "Todos" ? "🏪 Todos" : `${categoryEmojis[cat] || ""} ${cat}`}
+          </button>
+        ))}
+      </div>
+
+      <div style={styles.grid}>
+        {filtered.map(product => {
+          const qty = cart[product.id] || 0;
+          return (
+            <div key={product.id} style={styles.card}>
+              <div style={styles.cardCat}>{categoryEmojis[product.category]} {product.category}</div>
+              <div style={styles.cardName}>{product.name}</div>
+              <div>
+                <div style={styles.cardPrice}>R$ {product.price.toFixed(2)}</div>
+                <div style={styles.cardUnit}>por {product.unit}</div>
+                <div style={styles.cardNeg}>Valor negociável</div>
+              </div>
+              <div style={styles.qtyRow}>
+                {qty > 0 ? (
+                  <>
+                    <button style={styles.qtyBtn} onClick={() => removeFromCart(product.id)}>−</button>
+                    <span style={styles.qtyNum}>{qty}</span>
+                    <button style={styles.qtyBtn} onClick={() => addToCart(product.id)}>+</button>
+                  </>
+                ) : (
+                  <button
+                    style={{ ...styles.qtyBtn, background: RED, color: "#fff", width: "100%", borderRadius: 8, padding: "6px 0", fontSize: 13, fontWeight: 700 }}
+                    onClick={() => addToCart(product.id)}
+                  >
+                    + Adicionar
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+        {filtered.length === 0 && (
+          <div style={{ gridColumn: "1/-1", textAlign: "center", padding: 40, color: "rgba(255,255,255,0.4)" }}>
+            Nenhum produto encontrado.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
